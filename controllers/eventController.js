@@ -19,7 +19,7 @@ exports.deletEvent = async (req, res) => {
         res.status(404).end();
       }
     } catch (error) {
-      res.status(500).json({ message: error.message ?? "Server Error" });
+      res.status(500).json({ message: error.message || "Server Error" });
     }
 };
 exports.updateEvents = async (req, res) => {
@@ -38,11 +38,7 @@ exports.updateEvents = async (req, res) => {
 
 exports.eventList = async (req, res) => {
   try {
-    const Events = await Event.findAll({
-        
-        attributes: ["id", "name", "image"],
-        order: [["startDate", "DESC"]],
-      });
+    const Events = await Event.findAll();
     res.json(Events);
   } catch (error) {
     res.status(500).json({ message: error.message || "Server Error" });
