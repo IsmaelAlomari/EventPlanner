@@ -13,31 +13,45 @@ module.exports = (sequelize, DataTypes) => {
 
       email: {
         type: DataTypes.STRING,
-        validateValue: {isEmail: true, 
-        allowNull:true}
+        validate: {isEmail: true, 
+         notEmpty: true,}
 
       }, 
       image: {
         type: DataTypes.STRING,
-        validateValue:{allowNull: true}
+        validate:{ allowNull:false,}
       },
       numOfSeats: {
         type: DataTypes.INTEGER,
-        validValue:{ min: 1}
+        validate:{ min: 0}
 
       },
       bookedSeats : {
         type: DataTypes.INTEGER,
-        validValue: {max: 5}
-        
+        isMax(value) {
+            if(+value > this.numOfSeats) {
+                throw new Error("numOfSeats must be greater than bookedSeates.");
+            }
+        } 
       },
       startDate: {
         type: DataTypes.DATE,
-       isAfter: "2021-06-20",
+        validate: {
+            isDate: true,
+            isAfter: new Date().toISOString().slice(0, 10),
+            check(value) {
+              if (this.endDate === null && value === null) {
+                throw new Error("both cannt be null");
+              }
+            },
+          },
       },
       endDate: {
         type: DataTypes.DATE
 
       }
-    });
+      
+    },
+    { timestamps: false }
+    );
   }
